@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 export const SETTINGS_KEY = 'dv_settings'
 
-export function getSettings() {
+function getSettings() {
   if (typeof window === 'undefined') return { jour_reversement: 1, nom_boutique: 'NH Dépôt-Vente', email_boutique: '' }
   try { return { jour_reversement: 1, nom_boutique: 'NH Dépôt-Vente', email_boutique: '', ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}') } } catch { return { jour_reversement: 1, nom_boutique: 'NH Dépôt-Vente', email_boutique: '' } }
 }

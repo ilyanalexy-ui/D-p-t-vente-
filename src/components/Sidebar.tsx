@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from './ThemeProvider'
-import { LayoutDashboard, Users, Tag, ShoppingCart, Landmark, Settings, Sun, Moon } from 'lucide-react'
+import { LayoutDashboard, Users, Tag, ShoppingCart, Landmark, Settings, Sun, Moon, LogOut } from 'lucide-react'
 
 const nav = [
   { href: '/',             label: 'Dashboard',      Icon: LayoutDashboard },
@@ -12,6 +12,11 @@ const nav = [
   { href: '/reversements', label: 'Reversements',   Icon: Landmark },
   { href: '/settings',     label: 'Paramètres',     Icon: Settings },
 ]
+
+async function logout() {
+  await fetch('/api/auth/logout', { method: 'POST' })
+  window.location.href = '/login'
+}
 
 export default function Sidebar() {
   const path = usePathname()
@@ -124,6 +129,15 @@ export default function Sidebar() {
                 boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
               }} />
             </div>
+          </button>
+
+          <button
+            onClick={logout}
+            className="nav-item"
+            style={{ width: '100%', border: 'none', background: 'none', fontFamily: 'inherit', borderLeft: 'none', marginTop: 4 }}
+          >
+            <LogOut size={16} strokeWidth={1.8} style={{ flexShrink: 0, color: 'var(--muted)' }} />
+            <span style={{ fontSize: 13 }}>Déconnexion</span>
           </button>
 
           <div style={{

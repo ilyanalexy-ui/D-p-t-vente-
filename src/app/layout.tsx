@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Sidebar from '@/components/Sidebar'
+import AppShell from '@/components/AppShell'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ToastProvider } from '@/components/Toast'
 
@@ -16,12 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ThemeProvider>
           <ToastProvider>
-            <div style={{ display: 'flex', minHeight: '100vh' }}>
-              <Sidebar />
-              <main style={{ flex: 1, background: 'var(--bg)', paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))' }}>
-                {children}
-              </main>
-            </div>
+            <AppShell>{children}</AppShell>
           </ToastProvider>
         </ThemeProvider>
       </body>

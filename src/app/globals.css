@@ -339,17 +339,55 @@ input:focus, select:focus, textarea:focus {
 @media (max-width: 768px) {
   .sidebar-desktop { display: none !important; }
   .mobile-nav { display: flex !important; }
-  .page-content { padding: 16px !important; }
+  .page-content {
+    padding: 14px !important;
+    /* Account for mobile nav + safe area */
+    padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+  }
   .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
   .grid-2 { grid-template-columns: 1fr !important; }
   .caisse-grid { grid-template-columns: 1fr !important; }
   .hide-mobile { display: none !important; }
-  .table-scroll { overflow-x: auto; }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Prevent iOS Safari auto-zoom when focusing inputs (requires ≥ 16px) */
+  input, select, textarea { font-size: 16px !important; }
+
+  /* Minimum 44px touch targets for interactive elements */
+  .btn { min-height: 44px; }
+  .icon-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Sticky mobile cart bar (caisse) */
+  .mobile-cart-bar { display: flex !important; }
+
+  /* Toast container: full width on mobile */
+  .toast-container {
+    left: 12px !important;
+    right: 12px !important;
+    max-width: none !important;
+    width: auto !important;
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Article name text truncation in table */
+  .article-name-cell {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 @media (min-width: 769px) {
   .mobile-nav { display: none !important; }
   .sidebar-desktop { display: flex !important; }
+  .mobile-cart-bar { display: none !important; }
 }
 
 /* ── TOUCH FEEDBACK ── */

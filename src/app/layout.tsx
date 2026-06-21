@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ToastProvider>
             <div style={{ display: 'flex', minHeight: '100vh' }}>
               <Sidebar />
-              <main style={{ flex: 1, background: 'var(--bg)', paddingBottom: 80 }}>
+              <main style={{ flex: 1, background: 'var(--bg)', paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))' }}>
                 {children}
               </main>
             </div>

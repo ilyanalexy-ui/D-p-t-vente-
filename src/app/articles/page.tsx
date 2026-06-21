@@ -297,7 +297,7 @@ export default function Articles() {
               {filtered.map(a => (
                 <tr key={a.id}>
                   <td>
-                    <div style={{ fontWeight:600, letterSpacing:'-0.01em' }}>{a.marque} {a.modele||''}</div>
+                    <div className="article-name-cell" style={{ fontWeight:600, letterSpacing:'-0.01em' }}>{a.marque} {a.modele||''}</div>
                     <div style={{ fontSize:11, color:'var(--muted)', marginTop:1 }}>{a.type}{a.taille?` · ${a.taille}`:''}</div>
                   </td>
                   <td className="hide-mobile" style={{ color:'var(--text2)', fontSize:13 }}>{a.deposants?.prenom} {a.deposants?.nom}</td>
@@ -308,18 +308,18 @@ export default function Articles() {
                     <span className="font-display" style={{ fontWeight:700, fontSize:14 }}>{Number(a.prix_vente).toFixed(2)} €</span>
                   </td>
                   <td style={{ textAlign:'center' }}>
-                    <button onClick={()=>setShowQR(a)} title="Voir QR Code" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--muted)', padding:4, display:'inline-flex', alignItems:'center' }}>
+                    <button onClick={()=>setShowQR(a)} title="Voir QR Code" className="icon-btn" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--muted)' }}>
                       <QrCode size={16} />
                     </button>
                   </td>
                   <td style={{ textAlign:'center' }}>
-                    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:4 }}>
+                    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:0 }}>
                       {a.statut==='en_rayon' && (
-                        <button onClick={()=>setConfirmRecover(a)} title="Marquer récupéré" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--gold)', padding:4, display:'inline-flex', alignItems:'center' }}>
+                        <button onClick={()=>setConfirmRecover(a)} title="Marquer récupéré" className="icon-btn" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--gold)' }}>
                           <Undo2 size={14} />
                         </button>
                       )}
-                      <button onClick={()=>setConfirmDel(a)} title="Supprimer" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--danger)', padding:4, display:'inline-flex', alignItems:'center' }}>
+                      <button onClick={()=>setConfirmDel(a)} title="Supprimer" className="icon-btn" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--danger)' }}>
                         <Trash2 size={14} />
                       </button>
                     </div>

@@ -28,7 +28,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={{ toast }}>
       {children}
-      <div style={{
+      <div className="toast-container" style={{
         position: 'fixed', bottom: 90, right: 16, zIndex: 9999,
         display: 'flex', flexDirection: 'column', gap: 8,
         maxWidth: 340, width: 'calc(100% - 32px)',
@@ -49,7 +49,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             }}>
               <span style={{ color: c.color, fontWeight: 800, fontSize: 15, flexShrink: 0, width: 16, textAlign: 'center', lineHeight: 1 }}>{c.icon}</span>
               <span style={{ flex: 1, fontSize: 13.5, fontWeight: 500, color: 'var(--text)', lineHeight: 1.4 }}>{t.message}</span>
-              <button onClick={() => dismiss(t.id)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--muted)', fontSize: 18, padding: 0, lineHeight: 1, flexShrink: 0 }}>×</button>
+              <button onClick={() => dismiss(t.id)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--muted)', fontSize: 18, padding: '8px', lineHeight: 1, flexShrink: 0, margin: '-8px -4px -8px 0' }}>×</button>
             </div>
           )
         })}

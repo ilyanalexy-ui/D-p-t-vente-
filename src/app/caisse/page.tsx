@@ -213,7 +213,7 @@ export default function Caisse() {
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Rechercher…" style={{ width:'100%', padding:'9px 12px', background:'var(--surface2)', border:'1px solid var(--border)', borderRadius:9, fontSize:13, outline:'none', fontFamily:'inherit', color:'var(--text)', marginBottom:10, transition:'var(--transition-fast)' }}/>
             <div style={{ display:'flex', flexDirection:'column', gap:5, maxHeight:300, overflowY:'auto' }}>
               {filtered.map(a => (
-                <div key={a.id} onClick={()=>addToCart(a)} style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'var(--surface2)', borderRadius:10, border:'1px solid var(--border)', cursor:'pointer', transition:'var(--transition-fast)' }}
+                <div key={a.id} onClick={()=>addToCart(a)} style={{ display:'flex', alignItems:'center', gap:10, padding:'13px 12px', background:'var(--surface2)', borderRadius:10, border:'1px solid var(--border)', cursor:'pointer', transition:'var(--transition-fast)' }}
                   onMouseEnter={e=>(e.currentTarget.style.borderColor='var(--gold-border)')}
                   onMouseLeave={e=>(e.currentTarget.style.borderColor='var(--border)')}
                 >
@@ -252,7 +252,7 @@ export default function Caisse() {
                   {item.deposant?.email && <div style={{ fontSize:10, color:'var(--success)', marginTop:1 }}>Email auto dans 3 min</div>}
                 </div>
                 <span className="font-display" style={{ fontWeight:700, fontSize:14, flexShrink:0 }}>{Number(item.article.prix_vente).toFixed(2)} €</span>
-                <button onClick={()=>setCart(p=>p.filter((_,idx)=>idx!==i))} style={{ border:'none', background:'none', cursor:'pointer', color:'var(--danger)', fontSize:20, flexShrink:0, lineHeight:1, padding:2 }}>×</button>
+                <button onClick={()=>setCart(p=>p.filter((_,idx)=>idx!==i))} className="icon-btn" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--danger)', fontSize:20, flexShrink:0, lineHeight:1, padding:8 }}>×</button>
               </div>
             ))}
           </div>
@@ -264,7 +264,7 @@ export default function Caisse() {
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:10 }}>
               {(['cb','especes'] as const).map(m => (
-                <button key={m} onClick={()=>setMethode(m)} style={{ padding:'11px', borderRadius:9, border:`2px solid ${methode===m?'var(--accent)':'var(--border)'}`, background:methode===m?'var(--accent)':'var(--surface2)', color:methode===m?'var(--bg)':'var(--text)', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'inherit', transition:'var(--transition-fast)' }}>
+                <button key={m} onClick={()=>setMethode(m)} style={{ padding:'13px 11px', borderRadius:9, border:`2px solid ${methode===m?'var(--accent)':'var(--border)'}`, background:methode===m?'var(--accent)':'var(--surface2)', color:methode===m?'var(--bg)':'var(--text)', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'inherit', transition:'var(--transition-fast)' }}>
                   {m==='cb'?'💳 CB':'💵 Espèces'}
                 </button>
               ))}
@@ -274,6 +274,31 @@ export default function Caisse() {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Mobile sticky cart bar */}
+      <div className="mobile-cart-bar" style={{
+        position:'fixed', bottom:'calc(64px + env(safe-area-inset-bottom, 0px))', left:0, right:0, zIndex:90,
+        background:'var(--surface)', borderTop:'1.5px solid var(--border)',
+        backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
+        padding:'10px 12px', gap:8, alignItems:'center',
+        boxShadow:'0 -4px 24px rgba(0,0,0,0.08)',
+      }}>
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontSize:11, color:'var(--muted)', fontWeight:600 }}>
+            {cart.length} article{cart.length!==1?'s':''} · <span className="font-display" style={{ fontSize:15, fontWeight:700, color:'var(--text)' }}>{total.toFixed(2)} €</span>
+          </div>
+          <div style={{ display:'flex', gap:5, marginTop:5 }}>
+            {(['cb','especes'] as const).map(m => (
+              <button key={m} onClick={()=>setMethode(m)} style={{ padding:'5px 10px', borderRadius:7, border:`1.5px solid ${methode===m?'var(--accent)':'var(--border)'}`, background:methode===m?'var(--accent)':'var(--surface2)', color:methode===m?'var(--bg)':'var(--text)', fontSize:12, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>
+                {m==='cb'?'💳 CB':'💵'}
+              </button>
+            ))}
+          </div>
+        </div>
+        <button onClick={confirmerVente} disabled={cart.length===0||!methode||confirming} style={{ padding:'12px 18px', background:cart.length>0&&methode?'var(--success)':'var(--surface2)', color:cart.length>0&&methode?'white':'var(--muted)', border:'none', borderRadius:10, fontSize:13, fontWeight:700, cursor:cart.length>0&&methode?'pointer':'not-allowed', fontFamily:'inherit', flexShrink:0, boxShadow:cart.length>0&&methode?'0 4px 16px rgba(22,163,74,0.25)':'none' }}>
+          {confirming ? '…' : 'Encaisser'}
+        </button>
       </div>
 
       {/* Modal confirm annulation vente historique */}

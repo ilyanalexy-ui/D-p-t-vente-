@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Sidebar from '@/components/Sidebar'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { ToastProvider } from '@/components/Toast'
 
 export const metadata: Metadata = { title: 'NH Dépôt-Vente', description: 'Gestion dépôt-vente' }
 
@@ -14,12 +15,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ThemeProvider>
-          <div style={{ display: 'flex', minHeight: '100vh' }}>
-            <Sidebar />
-            <main style={{ flex: 1, background: 'var(--bg)', paddingBottom: 80 }}>
-              {children}
-            </main>
-          </div>
+          <ToastProvider>
+            <div style={{ display: 'flex', minHeight: '100vh' }}>
+              <Sidebar />
+              <main style={{ flex: 1, background: 'var(--bg)', paddingBottom: 80 }}>
+                {children}
+              </main>
+            </div>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

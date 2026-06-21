@@ -372,7 +372,12 @@ input:focus, select:focus, textarea:focus {
     right: 12px !important;
     max-width: none !important;
     width: auto !important;
-    bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(140px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Extra bottom padding on caisse page for sticky cart bar */
+  .caisse-page-mobile-pad {
+    padding-bottom: calc(220px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   /* Article name text truncation in table */

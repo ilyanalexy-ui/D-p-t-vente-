@@ -135,7 +135,7 @@ export default function Caisse() {
   const urgence = (pending?.timer||0) < 30
 
   return (
-    <div className="page-content" style={{ padding:20, display:'flex', flexDirection:'column', gap:14, minHeight:'calc(100vh - 80px)' }}>
+    <div className="page-content caisse-page-mobile-pad" style={{ padding:20, display:'flex', flexDirection:'column', gap:14, minHeight:'calc(100vh - 80px)' }}>
 
       {/* Header */}
       <div className="reveal reveal-1" style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', flexWrap:'wrap', gap:8 }}>
@@ -229,8 +229,8 @@ export default function Caisse() {
           </div>
         </div>
 
-        {/* PANIER */}
-        <div className="card" style={{ display:'flex', flexDirection:'column' }}>
+        {/* PANIER — desktop only, mobile uses sticky bar */}
+        <div className="card hide-mobile" style={{ display:'flex', flexDirection:'column' }}>
           <div style={{ padding:'18px 18px 14px', borderBottom:'1px solid var(--border)' }}>
             <div style={{ fontSize:9.5, fontWeight:700, textTransform:'uppercase', letterSpacing:'0.14em', color:'var(--muted)', marginBottom:4 }}>Panier</div>
             <div className="font-display" style={{ fontSize:24, fontWeight:700, letterSpacing:'-0.02em' }}>
@@ -278,27 +278,47 @@ export default function Caisse() {
 
       {/* Mobile sticky cart bar */}
       <div className="mobile-cart-bar" style={{
-        position:'fixed', bottom:'calc(64px + env(safe-area-inset-bottom, 0px))', left:0, right:0, zIndex:90,
+        position:'fixed', bottom:'calc(56px + env(safe-area-inset-bottom, 0px))', left:0, right:0, zIndex:90,
         background:'var(--surface)', borderTop:'1.5px solid var(--border)',
         backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)',
-        padding:'10px 12px', gap:8, alignItems:'center',
-        boxShadow:'0 -4px 24px rgba(0,0,0,0.08)',
+        padding:'10px 14px 12px', flexDirection:'column', gap:0,
+        boxShadow:'0 -6px 28px rgba(0,0,0,0.12)',
       }}>
-        <div style={{ flex:1, minWidth:0 }}>
-          <div style={{ fontSize:11, color:'var(--muted)', fontWeight:600 }}>
-            {cart.length} article{cart.length!==1?'s':''} · <span className="font-display" style={{ fontSize:15, fontWeight:700, color:'var(--text)' }}>{total.toFixed(2)} €</span>
-          </div>
-          <div style={{ display:'flex', gap:5, marginTop:5 }}>
-            {(['cb','especes'] as const).map(m => (
-              <button key={m} onClick={()=>setMethode(m)} style={{ padding:'5px 10px', borderRadius:7, border:`1.5px solid ${methode===m?'var(--accent)':'var(--border)'}`, background:methode===m?'var(--accent)':'var(--surface2)', color:methode===m?'var(--bg)':'var(--text)', fontSize:12, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}>
-                {m==='cb'?'💳 CB':'💵'}
-              </button>
+        {/* Cart items list */}
+        {cart.length > 0 && (
+          <div style={{ width:'100%', marginBottom:10 }}>
+            {cart.map((item, i) => (
+              <div key={item.article.id} style={{ display:'flex', alignItems:'center', gap:8, padding:'7px 0', borderBottom:'1px solid var(--border)' }}>
+                <span style={{ flex:1, fontSize:13, fontWeight:600, letterSpacing:'-0.01em', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                  {item.article.marque} {item.article.modele||item.article.type}
+                </span>
+                <span className="font-display" style={{ fontSize:13, fontWeight:700, flexShrink:0, color:'var(--text)' }}>
+                  {Number(item.article.prix_vente).toFixed(2)} €
+                </span>
+                <button onClick={()=>setCart(p=>p.filter((_,idx)=>idx!==i))} style={{ padding:'6px 8px', border:'none', background:'none', color:'var(--danger)', cursor:'pointer', fontSize:18, lineHeight:1, flexShrink:0 }}>×</button>
+              </div>
             ))}
           </div>
+        )}
+        {/* Controls row */}
+        <div style={{ display:'flex', alignItems:'center', gap:10, width:'100%' }}>
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ display:'flex', alignItems:'baseline', gap:6, marginBottom:7 }}>
+              <span style={{ fontSize:11.5, color:'var(--muted)', fontWeight:600 }}>{cart.length} art.</span>
+              <span className="font-display" style={{ fontSize:20, fontWeight:700, color:'var(--text)', letterSpacing:'-0.02em' }}>{total.toFixed(2)} €</span>
+            </div>
+            <div style={{ display:'flex', gap:6 }}>
+              {(['cb','especes'] as const).map(m => (
+                <button key={m} onClick={()=>setMethode(m)} style={{ padding:'7px 13px', borderRadius:8, border:`1.5px solid ${methode===m?'var(--accent)':'var(--border)'}`, background:methode===m?'var(--accent)':'transparent', color:methode===m?'var(--bg)':'var(--text2)', fontSize:12.5, fontWeight:700, cursor:'pointer', fontFamily:'inherit', transition:'var(--transition-fast)' }}>
+                  {m==='cb'?'💳 CB':'💵 Cash'}
+                </button>
+              ))}
+            </div>
+          </div>
+          <button onClick={confirmerVente} disabled={cart.length===0||!methode||confirming} style={{ padding:'14px 20px', background:cart.length>0&&methode?'var(--success)':'var(--surface2)', color:cart.length>0&&methode?'white':'var(--muted)', border:'none', borderRadius:12, fontSize:14, fontWeight:800, cursor:cart.length>0&&methode?'pointer':'not-allowed', fontFamily:'inherit', flexShrink:0, transition:'var(--transition-fast)', boxShadow:cart.length>0&&methode?'0 4px 16px rgba(22,163,74,0.3)':'none', letterSpacing:'0.01em' }}>
+            {confirming ? '…' : '✓ Encaisser'}
+          </button>
         </div>
-        <button onClick={confirmerVente} disabled={cart.length===0||!methode||confirming} style={{ padding:'12px 18px', background:cart.length>0&&methode?'var(--success)':'var(--surface2)', color:cart.length>0&&methode?'white':'var(--muted)', border:'none', borderRadius:10, fontSize:13, fontWeight:700, cursor:cart.length>0&&methode?'pointer':'not-allowed', fontFamily:'inherit', flexShrink:0, boxShadow:cart.length>0&&methode?'0 4px 16px rgba(22,163,74,0.25)':'none' }}>
-          {confirming ? '…' : 'Encaisser'}
-        </button>
       </div>
 
       {/* Modal confirm annulation vente historique */}
@@ -324,13 +344,15 @@ export default function Caisse() {
           </div>
           <div className="table-scroll">
             <table>
-              <thead><tr><th>Article</th><th className="hide-mobile">Déposant</th><th>Paiement</th><th style={{textAlign:'right'}}>Montant</th><th></th></tr></thead>
+              <thead><tr><th>Article</th><th className="hide-mobile">Déposant</th><th className="hide-mobile">Paiement</th><th style={{textAlign:'right'}}>Montant</th><th></th></tr></thead>
               <tbody>
                 {ventes.map(v => (
                   <tr key={v.id}>
-                    <td style={{ fontWeight:600, letterSpacing:'-0.01em' }}>{v.articles?.marque} {v.articles?.modele||v.articles?.type}</td>
+                    <td style={{ maxWidth:0 }}>
+                      <div className="article-name-cell" style={{ fontWeight:600, letterSpacing:'-0.01em', maxWidth:160 }}>{v.articles?.marque} {v.articles?.modele||v.articles?.type}</div>
+                    </td>
                     <td className="hide-mobile" style={{ color:'var(--text2)', fontSize:13 }}>{v.deposants?.prenom} {v.deposants?.nom}</td>
-                    <td><span className={`badge ${v.methode_paiement==='cb'?'badge-gray':'badge-amber'}`}>{v.methode_paiement==='cb'?'💳 CB':'💵'}</span></td>
+                    <td className="hide-mobile"><span className={`badge ${v.methode_paiement==='cb'?'badge-gray':'badge-amber'}`}>{v.methode_paiement==='cb'?'💳 CB':'💵'}</span></td>
                     <td style={{ textAlign:'right' }}>
                       <span className="font-display" style={{ fontWeight:700, fontSize:14 }}>{Number(v.prix_vente).toFixed(2)} €</span>
                     </td>

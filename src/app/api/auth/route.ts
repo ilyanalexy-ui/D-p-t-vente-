@@ -1,24 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
-  const { password } = await req.json()
+  const body = await req.json()
 
-  const adminPassword = process.env.APP_PASSWORD || 'admin'
   const adminToken = process.env.AUTH_TOKEN || 'dev-token'
-  const employeePassword = process.env.EMPLOYEE_PASSWORD || 'employe'
-  const employeeToken = process.env.EMPLOYEE_TOKEN || 'dev-employee-token'
+  const employeeToken = process.env.EMPLOYEE_TOKEN || 'employee-open'
 
   let token: string
   let role: string
 
-  if (password === adminPassword) {
-    token = adminToken
-    role = 'admin'
-  } else if (password === employeePassword) {
+  if (body.employee === true) {
+    // Accès employé sans mot de passe
     token = employeeToken
     role = 'employee'
   } else {
-    return NextResponse.json({ error: 'Mot de passe incorrect' }, { status: 401 })
+    const adminPassword = process.env.APP_PASSWORD || 'admin'
+    if (body.password !== adminPassword) {
+      return NextResponse.json({ error: 'Mot de passe incorrect' }, { status: 401 })
+    }
+    token = adminToken
+    role = 'admin'
   }
 
   const cookieOpts = {

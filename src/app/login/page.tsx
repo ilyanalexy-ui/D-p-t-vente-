@@ -1,13 +1,14 @@
 'use client'
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Eye, EyeOff, Lock } from 'lucide-react'
+import { Eye, EyeOff, Lock, ShoppingCart } from 'lucide-react'
 import { Suspense } from 'react'
 
 function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadingEmployee, setLoadingEmployee] = useState(false)
   const [show, setShow] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -35,6 +36,22 @@ function LoginForm() {
       setError('Erreur réseau, réessayez')
     }
     setLoading(false)
+  }
+
+  async function loginEmployee() {
+    setLoadingEmployee(true)
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ employee: true }),
+      })
+      if (res.ok) {
+        router.push('/caisse')
+        router.refresh()
+      }
+    } catch {}
+    setLoadingEmployee(false)
   }
 
   return (
@@ -81,23 +98,21 @@ function LoginForm() {
           </div>
         </div>
 
-        {/* Card */}
-        <div className="card" style={{ padding: '32px 28px' }}>
-          <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        {/* Admin card */}
+        <div className="card" style={{ padding: '28px 28px 24px' }}>
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
             <div style={{
-              width: 48, height: 48, borderRadius: 14,
+              width: 44, height: 44, borderRadius: 12,
               background: 'var(--gold-bg)', border: '1px solid var(--gold-border)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 14px',
+              margin: '0 auto 12px',
             }}>
-              <Lock size={20} style={{ color: 'var(--gold)' }} />
+              <Lock size={19} style={{ color: 'var(--gold)' }} />
             </div>
-            <h1 style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 5 }}>
-              Connexion
+            <h1 style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 4 }}>
+              Administrateur
             </h1>
-            <p style={{ fontSize: 12.5, color: 'var(--muted)', lineHeight: 1.5 }}>
-              Mot de passe administrateur ou employé
-            </p>
+            <p style={{ fontSize: 12, color: 'var(--muted)' }}>Accès complet à la gestion</p>
           </div>
 
           <form onSubmit={submit}>
@@ -106,8 +121,7 @@ function LoginForm() {
                 type={show ? 'text' : 'password'}
                 value={password}
                 onChange={e => { setPassword(e.target.value); setError('') }}
-                placeholder="Mot de passe"
-                autoFocus
+                placeholder="Mot de passe administrateur"
                 autoComplete="current-password"
                 style={{
                   width: '100%', padding: '13px 46px 13px 16px',
@@ -145,12 +159,49 @@ function LoginForm() {
               type="submit"
               disabled={loading || !password}
               className="btn btn-gold"
-              style={{ width: '100%', padding: '14px', fontSize: 14 }}
+              style={{ width: '100%', padding: '13px', fontSize: 14 }}
             >
-              {loading ? '···' : 'Accéder à la boutique'}
+              {loading ? '···' : 'Accéder'}
             </button>
           </form>
         </div>
+
+        {/* Divider */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '18px 0' }}>
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+          <span style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 600, letterSpacing: '0.08em' }}>OU</span>
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+        </div>
+
+        {/* Employee button */}
+        <button
+          onClick={loginEmployee}
+          disabled={loadingEmployee}
+          className="card"
+          style={{
+            width: '100%', border: '1px solid var(--border)', borderRadius: 16,
+            padding: '18px 24px', display: 'flex', alignItems: 'center', gap: 16,
+            background: 'var(--surface)', cursor: 'pointer', textAlign: 'left',
+            transition: 'var(--transition-fast)',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--gold-border)')}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}
+        >
+          <div style={{
+            width: 40, height: 40, borderRadius: 11, flexShrink: 0,
+            background: 'var(--surface2)', border: '1px solid var(--border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <ShoppingCart size={18} style={{ color: 'var(--muted)' }} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em', marginBottom: 2 }}>
+              {loadingEmployee ? '···' : 'Mode Employé'}
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--muted)' }}>Accès caisse uniquement</div>
+          </div>
+          <span style={{ color: 'var(--muted)', fontSize: 18 }}>→</span>
+        </button>
 
         <div style={{ textAlign: 'center', marginTop: 22, fontSize: 11, color: 'var(--muted)' }}>
           NH Dépôt-Vente · Marseille

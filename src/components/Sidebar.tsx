@@ -2,15 +2,21 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from './ThemeProvider'
-import { LayoutDashboard, Users, Tag, ShoppingCart, Landmark, Settings, Sun, Moon, LogOut } from 'lucide-react'
+import { useRole } from './AppShell'
+import { LayoutDashboard, Users, Tag, ShoppingCart, Landmark, Settings, Sun, Moon, LogOut, ShieldCheck, UserCog } from 'lucide-react'
 
-const nav = [
+const adminNav = [
   { href: '/',             label: 'Dashboard',      Icon: LayoutDashboard },
   { href: '/deposants',    label: 'Déposants',      Icon: Users },
   { href: '/articles',     label: 'Articles',       Icon: Tag },
   { href: '/caisse',       label: 'Caisse',         Icon: ShoppingCart },
   { href: '/reversements', label: 'Reversements',   Icon: Landmark },
   { href: '/settings',     label: 'Paramètres',     Icon: Settings },
+]
+
+const employeeNav = [
+  { href: '/caisse',    label: 'Caisse',    Icon: ShoppingCart },
+  { href: '/articles',  label: 'Articles',  Icon: Tag },
 ]
 
 async function logout() {
@@ -21,6 +27,8 @@ async function logout() {
 export default function Sidebar() {
   const path = usePathname()
   const { dark, toggle } = useTheme()
+  const role = useRole()
+  const nav = role === 'employee' ? employeeNav : adminNav
 
   return (
     <>
@@ -69,6 +77,15 @@ export default function Sidebar() {
             backgroundClip: 'text',
           }}>
             Dépôt-Vente
+          </div>
+          <div style={{ marginTop: 10, display: 'inline-flex', alignItems: 'center', gap: 5, padding: '3px 9px', borderRadius: 20, background: role === 'admin' ? 'var(--gold-bg)' : 'var(--surface2)', border: `1px solid ${role === 'admin' ? 'var(--gold-border)' : 'var(--border)'}` }}>
+            {role === 'admin'
+              ? <ShieldCheck size={11} style={{ color: 'var(--gold)' }} />
+              : <UserCog size={11} style={{ color: 'var(--muted)' }} />
+            }
+            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: role === 'admin' ? 'var(--gold-dark)' : 'var(--muted)' }}>
+              {role === 'admin' ? 'Administrateur' : 'Employé'}
+            </span>
           </div>
         </div>
 

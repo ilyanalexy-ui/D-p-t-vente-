@@ -96,7 +96,7 @@ function LoginForm() {
               Connexion
             </h1>
             <p style={{ fontSize: 12.5, color: 'var(--muted)', lineHeight: 1.5 }}>
-              Entrez votre mot de passe pour accéder<br />à la gestion de la boutique
+              Mot de passe administrateur ou employé
             </p>
           </div>
 

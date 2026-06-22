@@ -2,12 +2,14 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/components/Toast'
+import { useRole } from '@/components/AppShell'
 
 type CartItem = { article: any; deposant: any }
 type PendingVente = { ids: string[]; labels: string[]; total: number; timer: number }
 
 export default function Caisse() {
   const { toast } = useToast()
+  const role = useRole()
   const [cart, setCart] = useState<CartItem[]>([])
   const [scanInput, setScanInput] = useState('')
   const [scanning, setScanning] = useState(false)
@@ -143,7 +145,7 @@ export default function Caisse() {
           <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase', color:'var(--muted)', marginBottom:8 }}>Point de vente</div>
           <div style={{ display:'flex', alignItems:'center', gap:14, flexWrap:'wrap' }}>
             <h1 className="font-display" style={{ fontSize:30, fontWeight:700, letterSpacing:'-0.02em', lineHeight:1 }}>Caisse</h1>
-            {caJour > 0 && (
+            {role === 'admin' && caJour > 0 && (
               <div style={{ background:'var(--success-bg)', border:'1px solid var(--success)', borderRadius:20, padding:'4px 12px', fontSize:12.5, fontWeight:700, color:'var(--success)' }}>
                 +{caJour.toFixed(2)} € aujourd'hui
               </div>
@@ -336,8 +338,8 @@ export default function Caisse() {
         </div>
       )}
 
-      {/* Historique */}
-      {ventes.length>0 && (
+      {/* Historique — admin uniquement */}
+      {role === 'admin' && ventes.length>0 && (
         <div className="card reveal reveal-3">
           <div style={{ padding:'14px 20px', borderBottom:'1px solid var(--border)', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
             <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--muted)' }}>Ventes récentes</div>

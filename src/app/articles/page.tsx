@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/components/Toast'
+import { useRole } from '@/components/AppShell'
 import { QrCode, Trash2, Undo2 } from 'lucide-react'
 
 const TYPES = ['Hoodie','Sneaker','T-Shirt','Veste','Pantalon','Short','Robe','Accessoire','Autre']
@@ -12,6 +13,7 @@ const LS: any = { display:'block', fontSize:10, fontWeight:700, textTransform:'u
 
 export default function Articles() {
   const { toast } = useToast()
+  const role = useRole()
   const [articles, setArticles] = useState<any[]>([])
   const [deposants, setDeposants] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -116,7 +118,7 @@ export default function Articles() {
             ))}
           </div>
         </div>
-        <button className="btn btn-gold reveal reveal-1" onClick={() => setShowForm(true)}>+ Ajouter un article</button>
+        {role === 'admin' && <button className="btn btn-gold reveal reveal-1" onClick={() => setShowForm(true)}>+ Ajouter un article</button>}
       </div>
 
       {/* Filtres */}
@@ -313,16 +315,18 @@ export default function Articles() {
                     </button>
                   </td>
                   <td style={{ textAlign:'center' }}>
-                    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:0 }}>
-                      {a.statut==='en_rayon' && (
-                        <button onClick={()=>setConfirmRecover(a)} title="Marquer récupéré" className="icon-btn" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--gold)' }}>
-                          <Undo2 size={14} />
+                    {role === 'admin' && (
+                      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:0 }}>
+                        {a.statut==='en_rayon' && (
+                          <button onClick={()=>setConfirmRecover(a)} title="Marquer récupéré" className="icon-btn" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--gold)' }}>
+                            <Undo2 size={14} />
+                          </button>
+                        )}
+                        <button onClick={()=>setConfirmDel(a)} title="Supprimer" className="icon-btn" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--danger)' }}>
+                          <Trash2 size={14} />
                         </button>
-                      )}
-                      <button onClick={()=>setConfirmDel(a)} title="Supprimer" className="icon-btn" style={{ border:'none', background:'none', cursor:'pointer', color:'var(--danger)' }}>
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
